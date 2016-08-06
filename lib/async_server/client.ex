@@ -22,8 +22,10 @@ defmodule AsyncServer.Client do
     msg
   end
 
-  defp handle_message({:ok, msg}, _socket) do
+  defp handle_message({:ok, msg}, socket) do
     Logger.info "Got message #{msg}"
+    Task.Supervisor.start_child(AsyncServer.MessageHandlerSupervisor,
+                                AsyncServer.MessageHandler, :process_message, [msg, socket])
   end
 
   defp handle_message({:error, :closed}, _socket) do

@@ -14,7 +14,7 @@ defmodule AsyncServer.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger],
+    [applications: [:logger, :poolboy],
      mod: {AsyncServer, []}]
   end
 
@@ -28,6 +28,10 @@ defmodule AsyncServer.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+      {:poison, "~> 2.0"},
+      {:poolboy, "~> 1.5"}
+      # {:exredis, ">= 0.2.4"}
+    ]
   end
 end
