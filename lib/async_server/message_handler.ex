@@ -14,7 +14,7 @@ defmodule AsyncServer.MessageHandler do
 
   defp queue_message(msg) do
     Logger.info "Queueing message #{msg}"
-    :poolboy.transaction(:redis_producer_pool, fn(worker) ->
+    :poolboy.transaction(:redis_connection_pool, fn(worker) ->
       RedisSender.queue_message(worker, msg)
     end)
   end

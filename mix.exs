@@ -30,8 +30,8 @@ defmodule AsyncServer.Mixfile do
   defp deps do
     [
       {:poison, "~> 2.0"},
-      {:poolboy, "~> 1.5"}
-      # {:exredis, ">= 0.2.4"}
+      {:poolboy, "~> 1.5"},
+      {:exredis, ">= 0.2.4"}
     ]
   end
 end

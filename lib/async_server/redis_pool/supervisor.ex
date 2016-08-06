@@ -8,15 +8,16 @@ defmodule AsyncServer.RedisPool.Supervisor do
 
   def init(_) do
     Logger.info "Starting redis pool supervisor"
-    pool_opts = [
-      name: {:local, :redis_producer_pool},
-      worker_module: AsyncServer.RedisPool.Producer,
+    
+    connector_pool_opts = [
+      name: {:local, :redis_connection_pool},
+      worker_module: Exredis,
       size: 10,
       max_overflow: 10
     ]
 
     children = [
-      :poolboy.child_spec(:redis_producer_pool, pool_opts)
+      :poolboy.child_spec(:redis_connection_pool, connector_pool_opts)
     ]
     supervise(children, strategy: :one_for_one)
   end
