@@ -19,6 +19,8 @@ defmodule AsyncServer.RedisPool.Supervisor do
     children = [
       :poolboy.child_spec(:redis_connection_pool, connector_pool_opts)
     ]
-    supervise(children, strategy: :one_for_one)
+    
+    supervise(children, strategy: :one_for_one, max_restarts: 1000000,
+              max_seconds: 3600)
   end
 end
