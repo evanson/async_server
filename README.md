@@ -2,7 +2,7 @@
 
 AsyncServer (Asynchronous Server) is an implementation of a queue like protocol for sending/receiving messages over tcp/ssl sockets.
 
-A client connects to the socket and continuously writes a stream of data, with each message having the structure `n-bytes-message-length`+`message`. The server reads the first n bytes to determine length of the message, then reads the next <length> bytes.
+A client connects to the socket and continuously writes a stream of data, with each message having the structure `n-bytes-message-length`+`message`. The server reads the first n bytes to determine length of the message, then reads the next `length` bytes.
 
 Messages are tagged and then forwarded to internal services through a redis queue.
 
