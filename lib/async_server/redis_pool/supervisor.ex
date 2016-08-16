@@ -11,16 +11,15 @@ defmodule AsyncServer.RedisPool.Supervisor do
     
     connector_pool_opts = [
       name: {:local, :redis_connection_pool},
-      worker_module: Exredis,
+      worker_module: AsyncServer.RedisPool.Worker,
       size: 10,
       max_overflow: 10
     ]
 
     children = [
-      :poolboy.child_spec(:redis_connection_pool, connector_pool_opts)
+      :poolboy.child_spec(:redis_connection_pool, connector_pool_opts, [])
     ]
     
-    supervise(children, strategy: :one_for_one, max_restarts: 1000000,
-              max_seconds: 3600)
+    supervise(children, strategy: :one_for_one)
   end
 end

@@ -1,9 +1,9 @@
 defmodule AsyncServer.MessageHandler do
+  alias AsyncServer.RedisPool.Worker, as: RedisWorker
+  require Logger
+  
   @derive [Poison.Encoder]
   defstruct [:client_ip, :message]
-
-  require Logger
-  alias AsyncServer.RedisPool.Producer, as: RedisSender
   
   def process_message(msg, socket) do
     {:ok, {ip_addr, _port}} = :inet.peername(socket)
@@ -13,10 +13,9 @@ defmodule AsyncServer.MessageHandler do
   end
 
   defp queue_message(msg) do
-    Logger.info "Queueing message #{msg}"
     :poolboy.transaction(:redis_connection_pool, fn(worker) ->
-      RedisSender.queue_message(worker, msg)
-    end)
+      RedisWorker.queue_message(worker, msg)
+    end, :infinity)
   end
 
   defp ip_addr_to_string({octet_a, octet_b, octet_c, octet_d}) do
