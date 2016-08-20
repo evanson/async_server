@@ -16,8 +16,15 @@ defmodule AsyncServer.RedisPool.Supervisor do
       max_overflow: 0
     ]
 
+    consumer_pool_opts = [
+      name: {:local, :redis_consumer_pool},
+      worker_module: AsyncServer.RedisPool.Consumer,
+      size: 10
+    ]
+
     children = [
-      :poolboy.child_spec(:redis_connection_pool, connector_pool_opts, [])
+      :poolboy.child_spec(:redis_connection_pool, connector_pool_opts, []),
+      :poolboy.child_spec(:redis_consumer_pool, consumer_pool_opts, [])
     ]
     
     supervise(children, strategy: :one_for_one)

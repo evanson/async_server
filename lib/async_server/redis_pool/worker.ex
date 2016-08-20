@@ -14,7 +14,7 @@ defmodule AsyncServer.RedisPool.Worker do
 
   def init(_) do
     Process.flag(:trap_exit, true)
-    queue = Application.get_env(:async_server, :redis_queue)
+    queue = Application.get_env(:async_server, :redis_request_queue)
     state = %{redis_conn: nil, status: :disconnected, reconnect_timer: nil,
               buffer: :queue.new(), redis_queue: queue}
     {:ok, connect(state)}
