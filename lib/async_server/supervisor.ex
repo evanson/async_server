@@ -8,7 +8,8 @@ defmodule AsyncServer.Supervisor do
   def init(_) do
     children = [
       worker(Task, [AsyncServer.Acceptor, :accept, [Application.get_env(:async_server, :port)]]),
-      supervisor(Task.Supervisor, [[name: AsyncServer.TaskSupervisor]], id: :task_sup_1),
+      worker(AsyncServer.ClientRegistry, [:client_registry]),
+      supervisor(Task.Supervisor, [[name: AsyncServer.ClientSupervisor]], id: :task_sup_1),
       supervisor(Task.Supervisor, [[name: AsyncServer.MessageHandlerSupervisor,
                                     restart: :transient]], id: :task_sup_2),
       supervisor(AsyncServer.RedisPool.Supervisor, [])

@@ -12,8 +12,8 @@ defmodule AsyncServer.Acceptor do
   defp loop_acceptor(socket) do
     {:ok, client} = :gen_tcp.accept(socket)
     Logger.info "Got new client"
-    {:ok, pid} = Task.Supervisor.start_child(AsyncServer.TaskSupervisor,
-                                             AsyncServer.Client, :consume, [client])
+    {:ok, pid} = Task.Supervisor.start_child(AsyncServer.ClientSupervisor,
+                                             AsyncServer.Client, :init, [client])
     :ok = :gen_tcp.controlling_process(client, pid)
     loop_acceptor(socket)
   end

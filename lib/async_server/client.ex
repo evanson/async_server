@@ -1,6 +1,17 @@
 defmodule AsyncServer.Client do
   require Logger
 
+  def init(socket) do
+    case AsyncServer.ClientRegistry.register_client(:client_registry, self, socket) do
+      :ok ->
+        consume(socket)
+      :already_registered ->    # only one connection per ip
+        Logger.info "Terminating rogue client"
+        :gen_tcp.close(socket)
+        exit(:shutdown)
+    end
+  end
+
   @doc """
   Reads from socket and spawns a new task to handle the message.
   """
