@@ -57,9 +57,7 @@ defmodule AsyncServer.RedisPool.Worker do
       {:ok, redis_conn} ->
         Logger.info "Connection to redis established"
         state = %{state | redis_conn: redis_conn, status: :connected}
-        unless :queue.is_empty(state.buffer) do
-          flush_buffer(state)
-        end
+        flush_buffer(state)
       {:error, _} ->
         Logger.error "Connection to redis failed. Attempting reconnect..."
         %{state | redis_conn: nil,
