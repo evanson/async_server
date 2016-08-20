@@ -13,7 +13,7 @@ defmodule AsyncServer.RedisPool.Supervisor do
       name: {:local, :redis_connection_pool},
       worker_module: AsyncServer.RedisPool.Worker,
       size: 10,
-      max_overflow: 10
+      max_overflow: 0
     ]
 
     children = [
