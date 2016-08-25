@@ -27,7 +27,7 @@ defmodule AsyncServer.RedisPool.Consumer do
         :undefined -> # No message
           nil
         msg ->
-          case process_response(msg, state) do
+          case process_response(msg) do
             {:ok, :sent} ->
               Exredis.query(redis_conn, ["LREM", state.processing_queue, "-1", msg])
             {:error, :requeue} ->
@@ -55,7 +55,7 @@ defmodule AsyncServer.RedisPool.Consumer do
     {:noreply, state}
   end
 
-  defp process_response(msg, state) do
+  defp process_response(msg) do
     case Poison.decode(msg, as: %AsyncServer.MessageHandler{}) do
       {:ok, message} ->
         client_ip = message.client_ip
