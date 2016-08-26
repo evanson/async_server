@@ -26,37 +26,17 @@ defmodule AsyncServer.ETSManager do
   
   def handle_info({:"ETS-TRANSFER", tableid, from, table}, tableid) do
     Logger.info "ets handler down.. taking table ownership"
-    give_away(tableid)
+    pid  = wait_for_handler(table)
+    :ets.give_away(table, pid, table)
+    Logger.info "ets table given to new handler"
     {:noreply, tableid}
   end
 
-  defp give_away(table) do
-    case wait_for_handler(table, :infinity) do
-      :timeout ->
-        {:error, :timeout}
-      pid when :erlang.is_pid(pid) ->
-        :ets.give_away(table, pid, table)
-        Logger.info "ets ownership given to new ets handler"
-        {:ok, pid}
-      {:error, reason} ->
-        Logger.info "Could not wait for ets handler for table #{table}"
-        {:error, reason}
-    end
-  end
-
-  defp wait_for_handler(table, timeout) do
-    case :erlang.whereis(table) do
-      :undefined ->
-        case timeout do
-          :infinity ->
-            :timer.sleep(10)
-            wait_for_handler(table, timeout)
-          time when time > 0 ->
-            :timer.sleep(10)
-            wait_for_handler(table, time - 10)
-          _ ->
-            :timeout
-        end
+  defp wait_for_handler(table) do
+    case Process.whereis(table) do
+      nil ->
+        :timer.sleep(1)
+        wait_for_handler(table)
       pid ->
         pid
     end
