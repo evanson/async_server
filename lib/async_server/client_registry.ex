@@ -1,7 +1,6 @@
 defmodule AsyncServer.ClientRegistry do
   use GenServer
   require Logger
-  import AsyncServer.Util, only: [ip_addr_to_string: 1]
 
   def start_link(name) do
     GenServer.start_link(__MODULE__, name, name: name)
@@ -24,7 +23,7 @@ defmodule AsyncServer.ClientRegistry do
 
   def handle_call({:register_client, pid, socket}, _from, {clients, table, pids}) do
     {:ok, {ip_addr, _}} = :inet.peername(socket)
-    client_ip = ip_addr_to_string(ip_addr)
+    client_ip = to_string(:inet.ntoa(ip_addr))
 
     case lookup(clients, client_ip) do
       {:ok, _sock} ->

@@ -13,8 +13,7 @@ defmodule AsyncServerClientTest do
     assert send_and_recv(socket, "hello server!") == "hello server!"
 
     ip = ip_addr(socket)
-    ip = AsyncServer.Util.ip_addr_to_string(ip)    
-    assert  ip == "127.0.0.1"
+    ip = to_string(:inet.ntoa(ip))
     resp = AsyncServer.ClientRegistry.lookup(:client_registry, ip)
     assert  resp != :error
     assert elem(resp, 0) == :ok
